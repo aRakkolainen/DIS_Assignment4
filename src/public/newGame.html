@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <!-- Compiled and minified JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <title>Add a new game</title>
+</head>
+<body>
+    <h3>Add a new game</h3>
+    <form class="col s12">
+        <div class="input-field col s6">
+            <label for="game_name">Game name</label>
+            <input placeholder="Give name of the game" id="game_name" type="text" class="validate">
+        </div> 
+
+        <div class="input-field col s6">
+            <label for="game_description">Description</label>
+            <input placeholder="Give short description for the game" id="game_description" type="text" class="validate">
+        </div>
+        <label></label>
+        <input type="text" class="datepicker">
+
+        <p>
+            <label>
+              <input type="checkbox" class="filled-in" />
+              <span>Company A</span>
+            </label>
+          </p>
+
+          <p>
+            <label>
+              <input type="checkbox" class="filled-in" />
+              <span>Company B</span>
+            </label>
+          </p>
+
+          <div class="input-field col s12">
+            <select>
+              <optgroup label="Project teams in company A">
+                <option value="1">Option 1</option>
+                <option value="2">Option 2</option>
+              </optgroup>
+              <optgroup label="Project teams in company B">
+                <option value="3">Option 3</option>
+                <option value="4">Option 4</option>
+              </optgroup>
+            </select>
+            <label>Development team</label>
+          </div>
+
+        
+
+    </form>
+    
+</body>
+</html>
