@@ -15,4 +15,4 @@ let projectSchema = new Schema({
     owned_by: {type: String}
 })
 
-module.exports = mongoose.model("projects", projectSchema);
+module.exports = mongoose.model("Project", projectSchema);

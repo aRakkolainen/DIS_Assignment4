@@ -6,3 +6,13 @@ body {
 a {
   color: #00B7FF;
 }
+
+
+form#newGameForm {
+  margin-left:2%;
+}
+
+
+form#newProjectForm{
+  margin-left:2%;
+}

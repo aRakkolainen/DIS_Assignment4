@@ -12,4 +12,4 @@ let projectTeamMemberSchema = new Schema({
     project_team_ID: {type: ObjectId}
 })
 
-module.exports = mongoose.model("projectTeamMembers", projectTeamMemberSchema);
+module.exports = mongoose.model("ProjectTeamMember", projectTeamMemberSchema);

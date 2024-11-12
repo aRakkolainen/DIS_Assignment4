@@ -7,54 +7,64 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
     <!-- Compiled and minified JavaScript -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <link rel="stylesheet" href="/stylesheets/style.css">
+    <script type="module" src="./javascripts/newGame.js"></script>
+
     <title>Add a new game</title>
 </head>
 <body>
     <h3>Add a new game</h3>
-    <form class="col s12">
+    <form id="newGameForm" class="col s12" action="/api/add/newGame" method="POST">
         <div class="input-field col s6">
             <label for="game_name">Game name</label>
             <input placeholder="Give name of the game" id="game_name" type="text" class="validate">
         </div> 
 
-        <div class="input-field col s6">
+        <div class="input-field col s12">
             <label for="game_description">Description</label>
-            <input placeholder="Give short description for the game" id="game_description" type="text" class="validate">
+            <textarea placeholder="Give short description for the game" id="game_description" class="materialize-textarea"></textarea>
         </div>
-        <label></label>
-        <input type="text" class="datepicker">
 
+        <div class="input-field col s6">
+            <label for="game_age_limit">Age limit</label>
+            <input placeholder="Give age limit" id="game_age_limit" type="text" class="validate">
+        </div>
+
+        <div class="input-field col s6">
+            <label for="game_genre">Genre</label>
+            <input placeholder="Give genre" id="game_genre" type="text" class="validate">
+        </div>
+        <label for="launching_date"> Choose planned launching date</label>
+        <input id="launching_date" type="date" class="datepicker">
+
+        Select which companies will own the game
         <p>
             <label>
-              <input type="checkbox" class="filled-in" />
+              <input id="companyACheckBox" type="checkbox" class="filled-in" />
               <span>Company A</span>
             </label>
           </p>
-
           <p>
             <label>
-              <input type="checkbox" class="filled-in" />
+              <input id="companyBCheckBox" type="checkbox" class="filled-in" />
               <span>Company B</span>
             </label>
           </p>
 
-          <div class="input-field col s12">
-            <select>
-              <optgroup label="Project teams in company A">
-                <option value="1">Option 1</option>
-                <option value="2">Option 2</option>
-              </optgroup>
-              <optgroup label="Project teams in company B">
-                <option value="3">Option 3</option>
-                <option value="4">Option 4</option>
-              </optgroup>
-            </select>
-            <label>Development team</label>
-          </div>
+          <a class='dropdown-trigger btn' href='#' data-target='dropdown1'>Choose project team</a>
 
-        
+          <!-- Dropdown Structure -->
+          <ul id='teamDropDown' class='dropdown-content'>
+            <li><a href="#!" id="option0"></a>Team 1</li>
+            <li><a href="#!" id="option1"></a>Team 2</li>
+            <li class="divider" tabindex="-1"></li>
+            <li><a href="#!"></a>Team 3</li>
+            <li><a href="#!"><i class="material-icons"></i>four</a></li>
+            <li><a href="#!"><i class="material-icons"></i>five</a></li>
+          </ul>
 
-    </form>
+          <input type="submit" value="Save" id="submitBtn"></input>
+        </form>
     
 </body>
 </html>

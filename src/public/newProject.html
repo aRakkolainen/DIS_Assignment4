@@ -7,10 +7,50 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
     <!-- Compiled and minified JavaScript -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <link rel="stylesheet" href="/stylesheets/style.css">
     <script type="module" src="./javascripts/newProject.js" defer></script>
 </head>
 <body>
+    <h3>Add a new project</h3>
+    <form id="newProjectForm" class="col s12" action="/api/add/newProject" method="POST">
+        <div class="input-field col s6">
+            <label for="project_name">Project name</label>
+            <input placeholder="Give name of the game" id="project_name" type="text" class="validate">
+        </div> 
 
+        <label for="planned_start_date"> Choose planned start date</label>
+        <input id="planned_start_date" type="date" class="datepicker">
+
+        <label for="planned_end_date"> Choose planned end date</label>
+        <input id="planned_end_date" type="date" class="datepicker">
+
+        <p class="range-field">
+            <label for="budgetRange">Set the budget</label>
+            <input type="range" name="amountRange" min="0" max="800000" step="10000" value="0" oninput="this.form.amountInput.value=this.value" />
+            <input type="number" id="inputBudget" name="amountInput" min="0" max="800000" step="10000"  value="0" oninput="this.form.amountRange.value=this.value" />
+          </p>
+
+        Select which companies will own the project
+        <p>
+            <label>
+              <input id="companyACheckBox" type="checkbox" class="filled-in" />
+              <span>Company A</span>
+            </label>
+          </p>
+          <p>
+            <label>
+              <input id="companyBCheckBox" type="checkbox" class="filled-in" />
+              <span>Company B</span>
+            </label>
+          </p>
+
+        Link project with project team <!--To-do: Show list of existing project teams-->
+        <br>
+
+        Link project with game <!--To-do: Show list of existing games-->
+        <br>
+          <input type="submit" value="Save" id="submitBtn"></input>
+        </form>
     
 </body>
 </html>
