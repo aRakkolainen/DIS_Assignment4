@@ -20,11 +20,24 @@ router.get("/", (req, res) => {
 
 router.get("/gameProjects/companyA", async (req, res) => {
     console.log("Fetching game projects for company A..");
-    let related_projects = await Project.find({});
-    let games = await Game.find({project_ID : {$in: related_projects.project_ID}});
-    console.log(games);
+    let projects = await Project.find({});
+    let related_games = [];
+    let project_teams = [] ;
+    if (projects) {
+        projects.forEach( async(project) => {
+            let game = await Game.find({game_id: project.game_id});
+            let project_team = await ProjectTeam.find({team_id: project.project_team_id});
+            related_games.push(game);
+            project_teams.push(project_team); 
+        })
 
-    res.json({data: games})
+    }
+    let data = {
+        projects_company_A: projects, 
+        games_company_A: related_games,
+        project_team_company_A: project_teams
+    }
+    res.json(data);
 
 });
 
@@ -34,7 +47,7 @@ router.get("/gameProjects/companyB", async (req, res) => {
     //Test fetching data from db
     console.log("Fetching game projects for company B..")
 
-    let query = 'SELECT owned_by, project_name, game_name, team_name, member_name FROM project INNER JOIN game ON project.game_id = game.game_id INNER JOIN project_team ON project.project_team_id = project_team.team_id INNER JOIN project_team_member ON project_team.team_leader_id = project_team_member.member_id;';
+    let query = 'SELECT project_name, game_name, team_name, member_name FROM project INNER JOIN game ON project.game_id = game.game_id INNER JOIN project_team ON project.project_team_id = project_team.team_id INNER JOIN project_team_member ON project_team.team_leader_id = project_team_member.member_id;';
     let response = {};
     try {
         let result = await companyB_DB.query(query);
@@ -48,10 +61,32 @@ router.get("/gameProjects/companyB", async (req, res) => {
     res.json(response);
 });
 
+router.get("/list/games", async (req, res) => {
+    let games_company_B = []
+    let gamesCompanyBQuery = 'SELECT * FROM game';
+    let response = {}
+    try {
+        let games_company_A = await Game.find({});
+        let result = await companyB_DB.query(gamesCompanyBQuery);
+        games_company_B = result.rows;
+        response = {
+            companyA_games: games_company_A, 
+            companyB_games: games_company_B
+        }
 
+    } catch(error) {
+        console.log(error);
+    }
+
+    res.json(response);
+
+
+
+})
+
+//Add new game to databases
 router.post("/add/newGame", async (req, res) => {
     console.log("Adding new game..")
-    console.log(req.body);
     //If checked only for company A, then storing only to that database
     //To-do add checking how many games there already is and create the id based on that.
     let companyA_games = await Game.find({});
@@ -165,7 +200,7 @@ router.post("/add/newGame", async (req, res) => {
 
 });
 
-//Delete existing project
+//Delete existing game
 router.delete("/delete/game", async(req, res) => {
 
 })
@@ -175,23 +210,68 @@ router.delete("/delete/game", async(req, res) => {
 
 //Add new project
 router.post("/add/newProject", async (req, res) => {
-    //CompanyA is only owner of new game
-    if (req.body.companyA) {
-        console.log("Storing only to database of company A")
-    }
-    
-    //CompanyB is only owner of new game
-    if(req.body.companyB) {
-        console.log("Storing only to database of company B")
+    //Owner of project is defined based on the project manager
+    console.log(req.body);
+    let newName = req.body.name;
+    let newTeam_id = req.body.linked_project_team_id;
+    let newPlannedStartDate = req.body.planned_start_date; 
+    let newPlannedEndDate = req.body.planned_end_date;
+    let newBudget = req.body.budget;
+    let newGame_id = req.body.linked_game_id;
+    //let newPlannedStartDate = req.body.
+
+    let project_team = await ProjectTeam.findOne({team_id: req.body.linked_project_team_id});
+    let projects = await Project.find({});
+    let id=100;
+    let team_leader_id = project_team.team_leader_id;
+    if (team_leader_id && team_leader_id.includes("CA")) {
+        console.log("Company A will own the project");
+        if(projects.length >0) {
+            id = id + projects.length;
+        }
+            let project = await Project.findOne({project_name: newName});
+            if(project) {
+                project.project_team_id = newTeam_id; 
+                project.planned_start_date = newPlannedStartDate; 
+                project.planned_end_date = newPlannedEndDate; 
+                project.budget = newBudget; 
+                project.game_id = newGame_id;
+                await project.save();
+            } else {
+                let newProject = new Project({
+                    project_id: id, 
+                    project_name: newName, 
+                    planned_start_date: newPlannedStartDate, 
+                    planned_end_date: newPlannedEndDate, 
+                    budget: newBudget, 
+                    game_id: newGame_id, 
+                    owned_by: "CompanyA"
+                });
+                console.log(newProject);
+                await newProject.save();
+            }
+
 
     } 
-
-
-    // Both companies are owner of the new game (Development team which members from both companies)
-    if(req.body.companyA && req.body.companyB) {
-        console.log("Storing to both databases")
-
+    if(team_leader_id && team_leader_id.includes("CB")) {
+        console.log("Company B will own the project");
+        let findExistingProjectQuery = 'SELECT * FROM Project WHERE project_name=$1';
+        let newProjectQuery = 'INSERT INTO project_id, project_name, planned_start_date, planned_end_date, budget, project_team_id, game_id, owned_by) VALUES ($1, $2, $3, $4, $5, $6, $7, $8);';
+        try  {
+            let project = await companyB_DB.query(findExistingProjectQuery, [newName]);
+            if (project.rowCount == 0) {
+                await companyB_DB.query(newProjectQuery, [id, newName, newPlannedStartDate, newPlannedEndDate, newBudget, newProjectTeam, newGame_id]);
+            } else {
+                console.log("Project already exists, should update the existing one instead!");
+            }
+        } catch(error) {
+            console.log(error);
+        }
     }
+
+
+    //Storing based on project manager..
+    
 });
 
 
@@ -201,7 +281,7 @@ router.delete("/delete/project", async(req, res) => {
 })
 
 
-
+//Adding new project team
 router.post("/add/newProjectTeam", async(req, res) => {
     console.log("Adding new project team to both databases..");
     let team_id = req.body.team_id;
@@ -288,6 +368,7 @@ router.post("/add/newProjectTeam", async(req, res) => {
 
 });
 
+
 router.get("/list/projectTeamMembers", async(req, res) => {
     console.log("Fetching team members from both databases");
 
@@ -303,10 +384,18 @@ router.get("/list/projectTeamMembers", async(req, res) => {
 })
 
 router.get("/list/projectTeams", async(req, res) => {
-    //Company A:
     console.log("Fetching project teams..");
-    let project_teams_A = await ProjectTeam.find({});
-    let result = await companyB_DB.query("SELECT * FROM project_team;");
+    let teams_A = await ProjectTeam.find({}); 
+    let project_teams_A = []
+    teams_A.forEach(async(team) => {
+        let manager = await ProjectTeamMember.find({member_id: team.team_leader_id});
+        let project_team = {
+            project_team: team, 
+            manager: manager
+        }
+        project_teams_A.push(project_team)
+    })
+    let result = await companyB_DB.query("SELECT team_id, team_name, member_name, company FROM project_team INNER JOIN project_team_member ON project_team.team_leader_id = project_team_member.member_id;");
     let project_teams_B = result.rows;
     let data = {
         companyA: project_teams_A, 
@@ -315,10 +404,20 @@ router.get("/list/projectTeams", async(req, res) => {
     res.json(data);
 })
 
-async function fetchTeamMemberById(id) {
-    let member = await ProjectTeamMember.find({member_id: id});
-    return member;
-}
+router.get("/list/projectTeamNames", async(req, res) => {
+    console.log("Fetching project team names..");
+    let project_teams_A = await ProjectTeam.find({});
+    let result = await companyB_DB.query("SELECT * FROM project_team;");
+    let project_teams_B = result.rows;
+    
+
+    let data = {
+        companyA: project_teams_A, 
+        companyB: project_teams_B
+    }
+    res.json(data);
+})
+
 
 
 module.exports = router;

@@ -30,24 +30,11 @@
             <input type="number" id="inputBudget" name="amountInput" min="0" max="800000" step="10000"  value="0" oninput="this.form.amountRange.value=this.value" />
           </p>
 
-        Select which companies will own the project
-        <p>
-            <label>
-              <input id="companyACheckBox" type="checkbox" class="filled-in" />
-              <span>Company A</span>
-            </label>
-          </p>
-          <p>
-            <label>
-              <input id="companyBCheckBox" type="checkbox" class="filled-in" />
-              <span>Company B</span>
-            </label>
-          </p>
-
-        Link project with project team <!--To-do: Show list of existing project teams-->
+        Link this project with existing project team (project owner company will be defined based on project manager)
+        </div><ul id="projectTeamOptions"></ul></div>
         <br>
-
-        Link project with game <!--To-do: Show list of existing games-->
+        Link this project with existing game 
+        </div><ul id="gameOptions"></ul></div>
         <br>
           <input type="submit" value="Save" id="submitBtn"></input>
         </form>

@@ -28,10 +28,11 @@ async function fetchGameProjectData(url) {
 
 function fillGameProjectsTable(gameProjects) {
     let id = 0; 
-    gameProjects.forEach((gameProject) => {
+    try{
+        gameProjects.forEach((gameProject) => {
         
-        let row = document.createElement("tr");
-        row.setAttribute("id", "project#" + id.toString());
+            let row = document.createElement("tr");
+            row.setAttribute("id", "project#" + id.toString());
         let companyName = document.createElement("td");
         let projectName = document.createElement("td");
         let gameName = document.createElement("td");
@@ -63,7 +64,7 @@ function fillGameProjectsTable(gameProjects) {
             console.log("Opening project team view..");
         })
 
-        let projectManagerText = addText("projectManager" + id, gameProject.name);
+        let projectManagerText = addText("projectManager" + id, gameProject.member_name);
         projectManager.appendChild(projectManagerText);
 
         row.appendChild(companyName);
@@ -74,6 +75,9 @@ function fillGameProjectsTable(gameProjects) {
         gameProjectsTableBody.appendChild(row);
         id++;
     });
+} catch(error) {
+    console.log(error);
+}
     
 }
 
