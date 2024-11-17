@@ -10,10 +10,10 @@
     <link rel="stylesheet" href="/stylesheets/style.css">
     <script type="module" src="./javascripts/newGame.js"></script>
 
-    <title>Add a new game</title>
+    <title>Add a new game or update existing</title>
 </head>
 <body>
-    <h3>Add a new game</h3>
+    <h3>Add a new game or update existing one</h3>
     <form id="newGameForm" class="col s12" action="/api/add/newGame" method="POST">
         <div class="input-field col s6">
             <label for="game_name">Game name</label>
@@ -34,6 +34,7 @@
             <label for="game_genre">Genre</label>
             <input placeholder="Give genre" id="game_genre" type="text" class="validate">
         </div>
+
         <label for="launching_date"> Choose planned launching date</label>
         <input id="launching_date" type="date" class="datepicker">
 
@@ -50,19 +51,6 @@
               <span>Company B</span>
             </label>
           </p>
-
-          <a class='dropdown-trigger btn' href='#' data-target='dropdown1'>Choose project team</a>
-
-          <!-- Dropdown Structure -->
-          <ul id='teamDropDown' class='dropdown-content'>
-            <li><a href="#!" id="option0"></a>Team 1</li>
-            <li><a href="#!" id="option1"></a>Team 2</li>
-            <li class="divider" tabindex="-1"></li>
-            <li><a href="#!"></a>Team 3</li>
-            <li><a href="#!"><i class="material-icons"></i>four</a></li>
-            <li><a href="#!"><i class="material-icons"></i>five</a></li>
-          </ul>
-
           <input type="submit" value="Save" id="submitBtn"></input>
         </form>
     

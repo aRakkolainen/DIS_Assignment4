@@ -16,3 +16,7 @@ form#newGameForm {
 form#newProjectForm{
   margin-left:2%;
 }
+
+form#newProjectTeamForm {
+  margin-left: 2%;
+}

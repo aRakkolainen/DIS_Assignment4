@@ -16,6 +16,7 @@ async function onSubmit(event) {
     const inputCompanyACheckBox = document.getElementById("companyACheckBox");
     const inputCompanyBCheckBox = document.getElementById("companyBCheckBox");
     /*To-Do linking project and project team with created game */
+    console.log(inputGameDescription.value)
 
     let newGame = {
         game_name: inputGameName.value, 
@@ -42,6 +43,9 @@ async function onSubmit(event) {
 }
 
 async function fetchProjectTeams() {
-    let result = await fetch("http://localhost:3000/api/projectTeams")
+    let result = await fetch("http://localhost:3000/api/projectTeams");
+    let teams = await result.json(); 
+    console.log(teams);
+
 
 }
