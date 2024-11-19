@@ -5,21 +5,22 @@ if (document.readyState === "loading") {
 }
 
 async function fillProjectTeamsPage() {
-    await fetchProjectTeamsData();
-}
-
-
-async function fetchProjectTeamsData() {
-    let url = 'http://localhost:3000/api/list/projectTeams/detailed';
+    let url = 'http://localhost:3000/api/list/detailed/projectTeams';
     console.log("Fetching data..");
     let result = await fetch(url);
     let response = await result.json(); 
     console.log(response);
+    //await fetchProjectTeamsData();
+}
+
+
+async function fetchProjectTeamsData() {
     
 }
 
-function fillTeamsTable() {
+function fillTeamsTable(projectTeamsList) {
     const projectTeamsTable = document.getElementById("projectTeams");
+    
 
 
 

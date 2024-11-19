@@ -60,3 +60,22 @@ div.view-hidden {
 div.view-visible {
   visibility: visible;
 }
+
+div#gameDetail {
+  background-color: #bbdefb;
+  border-style:solid;
+  padding:1.5%;
+}
+
+div#projectDetail {
+  background-color: #b2dfdb;
+  border-style:solid;
+  padding:1.5%;
+}
+
+table#gameProjectsTable {
+  border-style: solid;
+  border-color:rgb(216, 216, 216);
+  padding-bottom:2%;
+  margin-bottom:1.5%;
+}

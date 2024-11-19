@@ -12,10 +12,11 @@
 </head>
 <body>
     <nav>
+        <a href="index.html">Main page</a> |
         <a href="projects.html">List projects and related games</a> |
         <a href="projectTeams.html">List project teams</a> |
-        <a href="newProject.html">Add new project</a> |
-        <a href="newGame.html">Add new game</a> |
+        <a href="newProject.html">Edit project</a> |
+        <a href="newGame.html">Edit game</a> |
         <a href="newTeam.html">Form new project team</a> |
         <a href="delete.html">Delete data</a> 
       </nav>
@@ -23,24 +24,43 @@
     <table id="gameProjectsTable">
         <thead>
             <tr>
-            <th>Company</th>
-            <th>Project</th>
-            <th>Game</th>
-            <th>Development team</th>
-            <th>Project manager</th>
+                <th>Company</th>
+                <th id="projectHeader">
+                    <div class="tooltip">Project
+                        <span class="tooltiptext">Click the name to show details</span>
+                      </div>
+                </th>
+                <th id="gameHeader">
+                    <div class="tooltip">Game
+                        <span class="tooltiptext">Click the name to show details</span>
+                      </div>
+                </th>
+                
+                <th>Development team</th>
+                <th>Project manager</th>
             </tr>
         </thead>
         <tbody id="gameProjectsTableBd">
-            <div class="view-hidden" id="gameDetail">
-                <p id="gameName"></p>
-                <p id="gameDescription"></p>
-                <p id="gameGenre"></p>
-                <p id="gameAgeLimit"></p>
-                <p id="gameLaunchingDate"></p>
-            </div>
-
-
+            
+            
         </tbody>
     </table>
+    <div class="view-hidden" id="projectDetail">
+        <h4>Project Details</h4>
+        <p id="projectName"></p>
+        <p id="plannedStartDate"></p>
+        <p id="plannedEndDate"></p>
+        <p id="budget"></p>
+        <button id="hideProjectDetailsBtn">Hide details</button>
+    </div>
+    <div class="view-hidden" id="gameDetail">
+        <h4>Game Details</h4>
+        <p id="gameName"></p>
+        <p id="gameDescription"></p>
+        <p id="gameGenre"></p>
+        <p id="gameAgeLimit"></p>
+        <p id="gameLaunchingDate"></p>
+        <button id="hideGameDetailsBtn">Hide details</button>
+    </div>
 </body>
 </html>

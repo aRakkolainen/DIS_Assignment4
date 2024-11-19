@@ -22,26 +22,20 @@ router.get("/gameProjects/companyA", async (req, res) => {
     console.log("Fetching game projects for company A..");
     let projects = await Project.find({});
     let data = {};
-    let result = [];
-    let foundProject = {
-        project_id: "", 
-        project_name: "", 
-        game_id: "",
-        game_name: "", 
-        project_manager: "", 
-        team_name: ""
-    }
+    let results = [];
 
     if (projects) {
+        console.log(projects);
         projects.forEach( async (project) => {
-            console.log("Found project..")
+            let foundProject = {};
             foundProject.project_id = project.project_id;
             foundProject.project_name = project.project_name;
             let game = await Game.findOne({game_id: project.game_id});
             if(game) {
                foundProject.game_name = game.game_name; 
                foundProject.game_id = game.game_id;
-            }
+            } 
+            
             let project_team_result = await ProjectTeam.findOne({team_id: project.project_team_id});
             let manager; 
             if(project_team_result) {
@@ -50,17 +44,14 @@ router.get("/gameProjects/companyA", async (req, res) => {
             if(manager) {
                 foundProject.project_manager =  manager.member_name;
                 foundProject.team_name = project_team_result.team_name;
-                result.push(foundProject);
             }
-            data = {
-                data : result
-            }
-            res.json(data);
-        })
-    } else {
-        data = {
-            data: "Projects not found"
-        }
+            results.push(foundProject);
+            console.log(results);
+        });
+        //console.log(results);
+
+        
+        res.json({"data": results});
     }
     
 });
@@ -85,13 +76,42 @@ router.get("/gameProjects/companyB", async (req, res) => {
 });
 
 
-router.get("/detailedView/game", async(req, res) => {
-    res.redirect("http://localhost:3000/detailedGameView.html");
+router.get("/detailedView/project/:project_id", async(req, res) => {
+    let project_id = req.params.project_id;
+    let result = {};
+    
+    let projectA = await Project.findOne({project_id: project_id});
+
+    let projectQuery = 'SELECT * FROM project WHERE project_id=$1';
+    let projectB;
+    try {
+        let projectResult = await companyB_DB.query(projectQuery, [project_id]);
+        if(projectResult.rowCount > 0) {
+            projectB = projectResult.rows[0];
+        }
+
+    } catch(error) {
+        console.error(error);
+    }
+
+    if(projectA) {
+        result = {
+            project: projectA
+        }
+    } else if(projectB) {
+        result = {
+            project: projectB
+        }
+    } else {
+        result = {
+            project: "Not found"
+        }
+    }
+    res.json(result);
 })
 
 router.get("/detailedView/game/:game_id", async (req, res) => {
     let game_id = req.params.game_id;
-    console.log(game_id);
     let result = {};
     
     let gameA = await Game.findOne({game_id: game_id});
@@ -121,19 +141,83 @@ router.get("/detailedView/game/:game_id", async (req, res) => {
             game: "Not found"
         }
     }
-    //window.location.replace("http://localhost:3000/detailedGameView.html");
     res.json(result);
 
 })
 
 
-router.get("/list/projectTeams/detailed", async(req, res) => {
+router.get("/list/detailed/projectTeams", async(req, res) => {
     console.log("Listing project teams with detailed info..")
     let project_teams_A = await ProjectTeam.find({});
-    console.log(project_teams_A.team_members);
+    let result = {}
+    let found_teams_A = [];
+    let found_team_A = {
+        team_id: "",
+        team_name: "",
+        team_leader_id: "",
+        project_manager: {}, 
+        team_members: []
+    }
+    if(project_teams_A) {
+        project_teams_A.forEach(async(team) => {
+            console.log("Trying to find the project manager..")
+            //Try to find project manager
+            found_team_A.team_id = team.team_id;
+            found_team_A.team_name = team.team_name;
+            let manager = await ProjectTeamMember.findOne({member_id: team.team_leader_id});
+            if(manager){
+                found_team_A.project_manager = {
+                    manager_id: manager.member_id,
+                    manager_name: manager.member_name, 
+                    manager_work_email: manager.work_email,
+                    manager_phone_number: manager.phone_number,
+                }
+            } 
+        
+            if(team.team_members) {
+                let membersOfCompanyA = [];
+                let membersOfCompanyB = [];
+                team.team_members.forEach((member) => {
+                    if (member.member_id.includes("CA")) {
+                        membersOfCompanyA.push(member.member_id);
+                    } else if(member.member_id.includes("CB")) {
+                        membersOfCompanyB.push(member.member_id);
+                    }
+                })
+
+                let detailedMembersOfCompanyA = await ProjectTeamMember.find({member_id: {$in: membersOfCompanyA}});
+
+                let detailedMembersOfCompanyB = [];
+                
+                //Looping through the project members and finding their details..
+
+                membersOfCompanyB.forEach(async(member) => {
+                    let query = 'SELECT * FROM project_team_member WHERE member_id=$1';
+                    try {
+                        let detailedMemberB = await companyB_DB.query(query, [member]);
+                        if(detailedMemberB || detailedMemberB.rowCount > 0) {
+                            console.log(detailedMemberB.rows)
+                            detailedMembersOfCompanyB.push(detailedMemberB.rows);
+                        }
+                    } catch(error) {
+                        console.error(error);
+                    }
+                })
+
+                let team_members = detailedMembersOfCompanyA.concat(detailedMembersOfCompanyB);
+                found_team_A.team_members = team_members;
+            }
+
+            found_teams_A.push(found_team_A);
+        })
+        console.log(found_teams_A);
+        result = {
+            companyA: found_teams_A
+        }
+        res.json(result);
+    }
 
 
-    res.json({});
 
 
 
@@ -602,13 +686,6 @@ router.post("/add/newProjectTeam", async(req, res) => {
                 console.log("Updating existing project team within company A");
                 existing_team_companyA.team_name = new_team_name;
                 existing_team_companyA.team_leader_id = new_team_leader_id;
-                /* console.log("Current team");
-                console.log(existing_team_companyA.team_members)
-                console.log("new members");
-                console.log(new_team_members); */
-                //console.log(existing_team_companyA);
-                //Clearing the existing team members
-                //console.log(currentMembers)
                 let team_members = existing_team_companyA.team_members;
                 while (team_members.length > 0) {
                     team_members.pop();
@@ -616,7 +693,7 @@ router.post("/add/newProjectTeam", async(req, res) => {
                 console.log(team_members);
 
                 new_team_members.forEach((member) => {
-                    team_members.push(member);
+                    team_members.push(member.member_id);
                 })
                 existing_team_companyA.team_members = new_team_members;
                 await existing_team_companyA.save();

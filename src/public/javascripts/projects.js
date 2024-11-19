@@ -7,8 +7,29 @@ if (document.readyState === "loading") {
 
 let gameProjectsTableBody = document.getElementById("gameProjectsTableBd");
 let gameDetailDiv = document.getElementById("gameDetail");
+let projectDetailDiv = document.getElementById("projectDetail");
 
+let gameHeader = document.getElementById("gameHeader"); 
+let projectHeader = document.getElementById("projectHeader");
 
+gameHeader.addEventListener("hover", () => {
+    var elems = document.querySelectorAll('.tooltipped');
+        var instances = M.Tooltip.init(elems, options);
+        instances.open();
+})
+
+let hideGameDetailsBtn = document.getElementById("hideGameDetailsBtn");
+let hideProjectDetailsBtn = document.getElementById("hideProjectDetailsBtn");
+
+hideGameDetailsBtn.addEventListener("click", () => {
+    console.log("Closing game details..")
+    gameDetailDiv.setAttribute("class", "view-hidden");
+})
+
+hideProjectDetailsBtn.addEventListener("click", () => {
+    console.log("Closing project details..")
+    projectDetailDiv.setAttribute("class", "view-hidden");
+})
 
 
 async function fillGameProjectsPage() {
@@ -55,19 +76,25 @@ function fillGameProjectsTable(gameProjects) {
         let projectText = addText("project" + id, gameProject.project_name);
         projectName.appendChild(projectText);
 
-        projectName.addEventListener("click", () => {
+        projectName.addEventListener("click", async () => {
             console.log("Opening project view..");
+            console.log("Opening detailed game view..");
+            let url = "http://localhost:3000/api/detailedView/project/" + gameProject.project_id;
+            console.log(url);
+            let response = await fetch(url);
+            let result = await response.json();
+            let project = result.project; 
+            //Show details..
+            if(project) {
+                fillProjectDetail(project.project_name, project.planned_start_date, project.planned_end_date, project.budget);
+                projectDetailDiv.setAttribute("class", "view-visible");
+            }
         })
 
         let gameText = addText("game" + id, gameProject.game_name);
         gameName.appendChild(gameText);
-        let gameDetailBtn = document.createElement("button");
-        gameDetailBtn.setAttribute("class", "waves-effect waves-light btn modal-trigger");
-        gameDetailBtn.setAttribute("id", "gameModalBtn");
-        gameDetailBtn.setAttribute("data-target", "#detailedGameData");
-        gameDetailBtn.innerText ="Show details";
         
-        gameDetailBtn.addEventListener("click", async() => {
+        gameName.addEventListener("click", async() => {
             console.log("Opening detailed game view..");
             let url = "http://localhost:3000/api/detailedView/game/" + gameProject.game_id;
             let response = await fetch(url);
@@ -75,7 +102,7 @@ function fillGameProjectsTable(gameProjects) {
             let game = result.game; 
             //Show details..
             if(game) {
-                fillGameDetail(game.game_name, game.description, game.age_limit, game.launching_date);
+                fillGameDetail(game.game_name, game.description, game.genre, game.age_limit, game.launching_date);
                 gameDetailDiv.setAttribute("class", "view-visible");
             }
         
@@ -105,7 +132,7 @@ function fillGameProjectsTable(gameProjects) {
 }
     
 }
-function fillGameDetail(name, description, age_limit, launching_date) {
+function fillGameDetail(name, description, genre, age_limit, launching_date) {
     let gameName = document.getElementById("gameName");
     let gameDescription = document.getElementById("gameDescription");
     let gameGenre = document.getElementById("gameGenre");
@@ -119,10 +146,37 @@ function fillGameDetail(name, description, age_limit, launching_date) {
     console.log(plannedLaunchingDate);
     gameName.innerText = "Name: " + name; 
     gameDescription.innerText = "Description: " + description; 
+    gameGenre.innerText = "Genre: " + genre;
     gameAgeLimit.innerText = "Age limit: " + age_limit; 
     if(launching_date && plannedLaunchingDate) {
         gameLaunchingDate.innerText = "Planned launching date: " + lDate.getDate() + "." + launching_month +"." + lDate.getFullYear();
     }
+}
+
+function fillProjectDetail(name, planned_start_date, planned_end_date, budget) {
+    let projectName = document.getElementById("projectName");
+    let plannedStartDate = document.getElementById("plannedStartDate");
+    let plannedEndDate = document.getElementById("plannedEndDate");
+    let plannedBudget = document.getElementById("budget");
+    //Source: https://www.w3schools.com/js/js_date_methods.asp
+    const months = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"];
+    let plannedStartingDate;
+    if(planned_start_date) {
+        let plannedStart = new Date(planned_start_date);
+        let starting_month = months[plannedStart.getMonth()];
+        plannedStartingDate = plannedStart.getDate() + "." + starting_month +"." + plannedStart.getFullYear();
+        plannedStartDate.innerText = "Planned start date: " +plannedStartingDate
+    }
+    let plannedEndingDate;
+    if(planned_end_date) {
+        let plannedEnd = new Date(planned_end_date);
+        let ending_month = months[plannedEnd.getMonth()];
+        plannedEndingDate = plannedEnd.getDate() + "." + ending_month +"." + plannedEnd.getFullYear();
+        plannedEndDate.innerText = "Planned end date: " +plannedEndingDate
+    }
+    
+    projectName.innerText = "Name: " + name; 
+    plannedBudget.innerText = "Budget: " + budget + " €"; 
 }
 
 function addText(id, text) {
