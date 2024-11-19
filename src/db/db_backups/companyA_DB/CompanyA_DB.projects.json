@@ -1,0 +1,38 @@
+[{
+  "_id": {
+    "$oid": "673c8ecfb4d2feec85ad4f35"
+  },
+  "project_id": "CA_Project_1001",
+  "project_name": "turtle fighter 2.0 project",
+  "planned_start_date": {
+    "$date": "2024-12-30T00:00:00.000Z"
+  },
+  "planned_end_date": {
+    "$date": "2025-10-27T00:00:00.000Z"
+  },
+  "budget": 20000,
+  "game_id": "CA_Game_1003",
+  "project_team_id": "CA_Team_1001",
+  "owned_by": "companyA",
+  "project_team_leader_id": "CA_1009",
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "673ccd066d2fe806b26bacdc"
+  },
+  "project_id": "CA_Project_1002",
+  "project_name": "tester project",
+  "planned_start_date": {
+    "$date": "2024-11-25T00:00:00.000Z"
+  },
+  "planned_end_date": {
+    "$date": "2024-11-30T00:00:00.000Z"
+  },
+  "budget": 10000,
+  "game_id": "CA_Game_1003",
+  "project_team_id": "CA_Team_1002",
+  "owned_by": "companyA",
+  "project_team_leader_id": "CA_1009",
+  "__v": 0
+}]

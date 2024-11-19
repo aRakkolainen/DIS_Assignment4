@@ -1,0 +1,110 @@
+[{
+  "_id": {
+    "$oid": "67338306e519c34a430eda32"
+  },
+  "member_name": "Josefine Smith",
+  "phone_number": "0129318311",
+  "work_email": "josefine.smith@companyA.com",
+  "role": "Project Manager",
+  "company": "companyA",
+  "member_id": "CA_1001"
+},
+{
+  "_id": {
+    "$oid": "673383a6e519c34a430eda34"
+  },
+  "member_name": "Sofia Smith",
+  "phone_number": "0999328321",
+  "work_email": "sofia.smith@companyA.com",
+  "role": "Game Designer",
+  "company": "companyA",
+  "member_id": "CA_1002"
+},
+{
+  "_id": {
+    "$oid": "6733840ee519c34a430eda35"
+  },
+  "member_name": "John Doe",
+  "phone_number": "0978328341",
+  "work_email": "john.doe@companyA.com",
+  "role": "Game Designer",
+  "company": "companyA",
+  "member_id": "CA_1003"
+},
+{
+  "_id": {
+    "$oid": "6733843de519c34a430eda36"
+  },
+  "member_name": "Sonya Doe",
+  "phone_number": "0978932832",
+  "work_email": "sonya.doe@companyA.com",
+  "role": "Programmer",
+  "company": "companyA",
+  "member_id": "CA_1004"
+},
+{
+  "_id": {
+    "$oid": "6733846de519c34a430eda37"
+  },
+  "member_name": "Laura Doe",
+  "phone_number": "0378962232",
+  "work_email": "laura.doe@companyA.com",
+  "role": "Programmer",
+  "company": "companyA",
+  "member_id": "CA_1005"
+},
+{
+  "_id": {
+    "$oid": "67338490e519c34a430eda38"
+  },
+  "member_name": "Alexander Robinson",
+  "phone_number": "0398962134",
+  "work_email": "alexander.robinson@companyA.com",
+  "role": "Sound Engineer",
+  "company": "companyA",
+  "member_id": "CA_1006"
+},
+{
+  "_id": {
+    "$oid": "673384cee519c34a430eda39"
+  },
+  "member_name": "Jonathan Doe",
+  "phone_number": "0328063232",
+  "work_email": "jonathan.doe@companyA.com",
+  "role": "Game Tester",
+  "company": "companyA",
+  "member_id": "CA_007"
+},
+{
+  "_id": {
+    "$oid": "673384ede519c34a430eda3a"
+  },
+  "member_name": "Robert Doe",
+  "phone_number": "0329167232",
+  "work_email": "robert.doe@companyA.com",
+  "role": "Animator",
+  "company": "companyA",
+  "member_id": "CA_1008"
+},
+{
+  "_id": {
+    "$oid": "67338513e519c34a430eda3b"
+  },
+  "member_name": "Alina Roe",
+  "phone_number": "0338063832",
+  "work_email": "alina.roe@companyA.com",
+  "role": "Project Manager",
+  "company": "companyA",
+  "member_id": "CA_1009"
+},
+{
+  "_id": {
+    "$oid": "6733854ae519c34a430eda3c"
+  },
+  "member_name": "Doug Roe",
+  "phone_number": "0328073211",
+  "work_email": "doug.roe@companyA.com",
+  "role": "Sound Engineer",
+  "company": "companyA",
+  "member_id": "CA_1010"
+}]

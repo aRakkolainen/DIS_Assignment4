@@ -1,0 +1,14 @@
+[{
+  "_id": {
+    "$oid": "673cb45a79cbf97d54d85b0d"
+  },
+  "game_id": "CA_Game_1003",
+  "game_name": "turtle fighter 2.0",
+  "description": "Game where two turtles are fighting",
+  "launching_date": {
+    "$date": "2025-10-30T00:00:00.000Z"
+  },
+  "age_limit": "7+",
+  "genre": "2D, combat",
+  "__v": 0
+}]
