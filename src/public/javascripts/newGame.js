@@ -16,7 +16,6 @@ async function onSubmit(event) {
     const inputCompanyACheckBox = document.getElementById("companyACheckBox");
     const inputCompanyBCheckBox = document.getElementById("companyBCheckBox");
     /*To-Do linking project and project team with created game */
-    console.log(inputGameDescription.value)
 
     let newGame = {
         game_name: inputGameName.value, 
@@ -27,7 +26,6 @@ async function onSubmit(event) {
         companyA: inputCompanyACheckBox.checked,
         companyB: inputCompanyBCheckBox.checked    
     } 
-    console.log(newGame);
     let response = await fetch(url, {
         method: "POST", 
         headers: {
@@ -35,8 +33,8 @@ async function onSubmit(event) {
         }, 
         body: JSON.stringify(newGame)
     })
-
-    console.log(response); 
+    let responseText = await response.json(); 
+    console.log(responseText.message);
 
 
 

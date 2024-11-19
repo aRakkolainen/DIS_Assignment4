@@ -3,6 +3,12 @@ let teamLeadersList = document.getElementById("teamLeaderOptions");
 
 window.onload = async () => {
     await fetchTeamMembersAndListThemToPage();
+    let projectManagerHeader = document.getElementById("projectManagerToolTip");
+    projectManagerHeader.addEventListener("hover", () => {
+        var elems = document.querySelectorAll('.tooltipped');
+        var instances = M.Tooltip.init(elems, options);
+        instances.open();
+    })
 }
 
 async function fetchTeamMembersAndListThemToPage() {
@@ -86,11 +92,11 @@ async function onSubmit(event) {
     let inputTeamLeaders = document.getElementById("teamLeaderOptions");
     let teamLeaders = inputTeamLeaders.childNodes;
 
-    let numberOfTeams = await fetchExistingProjectTeams();
+    /* let numberOfTeams = await fetchExistingProjectTeams();
     let team_id = 1000;
     if (numberOfTeams.companyA != 0 && numberOfTeams.companyB != 0) {
         team_id = 1000 + numberOfTeams.companyA;
-    }
+    } */
     let managerID = "";
     for (let i=0; i < teamLeaders.length; i++) {
         let input = teamLeaders[i].firstChild;
@@ -116,13 +122,8 @@ async function onSubmit(event) {
                 let textSpan = label.lastChild;
                 if(input.checked) {
                     let member_id = textSpan.id;
-                    let memberData = textSpan.textContent;
-                    let memberDataPieces = memberData.split(", ");
                     let teamMember = {
                         member_id: member_id,
-                        member_name:memberDataPieces[0],
-                        member_role: memberDataPieces[1],
-                        member_company: memberDataPieces[2]
                     } 
                     members.push(teamMember);
                 }
@@ -131,12 +132,11 @@ async function onSubmit(event) {
     }
         
     let newProjectTeam = {
-        team_id: team_id.toString(),
         team_name: inputTeamName.value,
         team_leader_id: managerID,
         team_members: members
     };
-
+    console.log(newProjectTeam);
     console.log("Project team to be stored: " + newProjectTeam);
 
     let url = 'http://localhost:3000/api/add/newProjectTeam'

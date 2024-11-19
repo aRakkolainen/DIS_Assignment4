@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Delete data from databases</title>
+    <script type="module" src="./javascripts/delete.js" defer></script>
+    <link rel="stylesheet" href="/stylesheets/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <!-- Compiled and minified JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+</head>
+<body>
+    <nav>
+        <a href="projects.html">List projects and related games</a> |
+        <a href="newProject.html">Add new project</a> |
+        <a href="newGame.html">Add new game</a> |
+        <a href="newTeam.html">Form new project team</a> |
+        <a href="delete.html">Delete data</a> 
+      </nav>
+      <div id="deleteForm">
+          <h4>Choose which data you wish to delete from databases</h4>
+          <br>
+          <div id="deleteGame">
+              <div class="input-field col s6">
+                  <label for="game_name">Game name</label>
+                  <input placeholder="Give name of the game which you wish to delete from db" id="game_name" type="text" class="validate">
+                  <button id="deleteGameBtn"class="btn waves-effect waves-light red">Delete game</button>
+              </div> 
+          </div>
+          <br>
+          <div id="deleteProject">
+              <div class="input-field col s6">
+                  <label for="project_name">Project name</label>
+                  <input placeholder="Give name of the project which you wish to delete from db" id="project_name" type="text" class="validate">
+                  <button id="deleteProjectBtn" class="btn waves-effect waves-light red">Delete project</button>
+              </div> 
+          </div>
+          <br>
+          <div id="deleteProjectTeam">
+              <div class="input-field col s6">
+                  <label for="project_team_name">Project team name</label>
+                  <input placeholder="Give name of the project team which you wish to delete from db" id="project_team_name" type="text" class="validate">
+                  <button id="deleteProjectTeamBtn" class="btn waves-effect waves-light red">Delete project team</button>
+              </div> 
+      
+          </div>
+      </div>
+    
+</body>
+</html>

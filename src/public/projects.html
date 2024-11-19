@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/stylesheets/style.css">
     <script type="module" src="./javascripts/projects.js" defer></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
   <!-- Compiled and minified JavaScript -->
@@ -10,6 +11,14 @@
     <title>Game projects from companies A and B</title>
 </head>
 <body>
+    <nav>
+        <a href="projects.html">List projects and related games</a> |
+        <a href="projectTeams.html">List project teams</a> |
+        <a href="newProject.html">Add new project</a> |
+        <a href="newGame.html">Add new game</a> |
+        <a href="newTeam.html">Form new project team</a> |
+        <a href="delete.html">Delete data</a> 
+      </nav>
     <h4>Listing all game projects from companies A and B</h4>
     <table id="gameProjectsTable">
         <thead>
@@ -22,6 +31,15 @@
             </tr>
         </thead>
         <tbody id="gameProjectsTableBd">
+            <div class="view-hidden" id="gameDetail">
+                <p id="gameName"></p>
+                <p id="gameDescription"></p>
+                <p id="gameGenre"></p>
+                <p id="gameAgeLimit"></p>
+                <p id="gameLaunchingDate"></p>
+            </div>
+
+
         </tbody>
     </table>
 </body>

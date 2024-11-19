@@ -17,7 +17,7 @@ async function onSubmit(event) {
     const inputGameOptions = document.getElementById("gameOptions");
     let projectTeams = inputProjectTeamOptions.childNodes;
     let games = inputGameOptions.childNodes;
-    let selectedProjectTeam = checkRadioButtonSelection(projectTeams);
+    let selectedProjectTeam = checkSelectedProjectTeam(projectTeams);
     let selectedGame = checkRadioButtonSelection(games);
     
     let newProject = {
@@ -25,7 +25,8 @@ async function onSubmit(event) {
         planned_start_date: inputPlannedStartDate.value, 
         planned_end_date: inputPlannedEndDate.value,
         budget: inputBudget.value,
-        linked_project_team_id: selectedProjectTeam, 
+        linked_project_team_id: selectedProjectTeam.project_team_id, 
+        linked_team_leader_id: selectedProjectTeam.team_leader_id,
         linked_game_id: selectedGame     
     } 
     console.log(newProject);
@@ -37,8 +38,8 @@ async function onSubmit(event) {
         body: JSON.stringify(newProject)
     })
 
-    let result = await response.json(); 
-    console.log(result);
+    let result = await response.text(); 
+    console.log(result.text);
 }
 function checkRadioButtonSelection(options){
     console.log("Checking options..")
@@ -50,6 +51,25 @@ function checkRadioButtonSelection(options){
 
         if(input.checked) {
           selected = span.id;
+          console.log(selected);
+        }
+    })
+    return selected;
+}
+
+function checkSelectedProjectTeam(options){
+    console.log("Checking options..")
+    let selected = "";
+    options.forEach((option) => {
+        let label = option.firstChild;
+        let input = label.firstChild;
+        let span = label.lastChild;
+
+        if(input.checked) {
+          selected = {
+            project_team_id:input.id,
+            team_leader_id:span.id
+          }
         }
     })
     return selected;
@@ -63,16 +83,8 @@ async function fetchExistingProjectTeamsAndFillProjectOptions() {
 
     let teamsA = teams.companyA
     let teamsB = teams.companyB;
-    console.log(teamsB);
-    let teamsList = [];
-    for (let i=0; i < teamsA.length; i++) {
-        if (teamsA[i].project_team.team_id == teamsB[i].team_id && teamsA[i].project_team.team_name === teamsB[i].team_name) {
-            teamsList.push(teamsB[i]);
-        } else {
-            teamsList.push(teamsA[i]);
-            teamsList.push(teamsB[i]);
-        }
-    }
+    let teamsList = teamsA.concat(teamsB);
+    console.log(teamsList);
     
     let teamOptionsElement= document.getElementById("projectTeamOptions");
     teamsList.forEach(team => {
@@ -84,8 +96,12 @@ async function fetchExistingProjectTeamsAndFillProjectOptions() {
         input.setAttribute("id", team.team_id);
         input.setAttribute("type", "radio");
         input.setAttribute("name", "project_team");
-        itemSpan.innerText = team.team_name + " (Project Manager " + team.member_name + ", " + team.company + ")";
-        itemSpan.setAttribute("id", team.team_id);
+        if(team.team_id.includes("CA_")) {
+            itemSpan.innerText = team.team_name + " (Project Manager " + team.member_name + ", companyA";
+        } else if(team.team_id.includes("CB_")) {
+            itemSpan.innerText = team.team_name + " (Project Manager " + team.member_name + ", companyB";
+        }
+        itemSpan.setAttribute("id", team.team_leader_id);
         label.appendChild(input); 
         label.appendChild(itemSpan);
         listItem.appendChild(label);
@@ -114,7 +130,15 @@ async function fetchExistingGamesAndFillGameOptions() {
         input.setAttribute("id", game.game_id);
         input.setAttribute("type", "radio");
         input.setAttribute("name", "game");
-        itemSpan.innerText = game.game_name;
+        let plannedLaunchingDate = "";
+        if (game.launching_date) {
+            //Source: https://www.w3schools.com/js/js_date_methods.asp
+            let launching_date = new Date(game.launching_date);
+            const months = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"];
+            let launching_month = months[launching_date.getMonth()];
+            plannedLaunchingDate = launching_date.getDate() + "." + launching_month +"." + launching_date.getFullYear() 
+        }
+        itemSpan.innerText = game.game_name + " (planned launching date: " + plannedLaunchingDate + ")";
         itemSpan.setAttribute("id", game.game_id);
         label.appendChild(input); 
         label.appendChild(itemSpan);

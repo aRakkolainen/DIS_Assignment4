@@ -11,23 +11,31 @@
     <script type="module" src="./javascripts/newProject.js" defer></script>
 </head>
 <body>
-    <h3>Add a new project</h3>
+  <nav>
+    <a href="projects.html">List projects and related games</a> |
+    <a href="projectTeams.html">List project teams</a> |
+    <a href="newProject.html">Add new project</a> |
+    <a href="newGame.html">Add new game</a> |
+    <a href="newTeam.html">Form new project team</a> |
+    <a href="delete.html">Delete data</a> 
+  </nav>
+    <h3>Add a new project or update existing one</h3>
     <form id="newProjectForm" class="col s12" action="/api/add/newProject" method="POST">
         <div class="input-field col s6">
             <label for="project_name">Project name</label>
-            <input placeholder="Give name of the game" id="project_name" type="text" class="validate">
+            <input placeholder="Give name of the project" id="project_name" type="text" class="validate" required>
         </div> 
 
         <label for="planned_start_date"> Choose planned start date</label>
-        <input id="planned_start_date" type="date" class="datepicker">
+        <input id="planned_start_date" type="date" class="datepicker" required>
 
         <label for="planned_end_date"> Choose planned end date</label>
-        <input id="planned_end_date" type="date" class="datepicker">
+        <input id="planned_end_date" type="date" class="datepicker" required>
 
         <p class="range-field">
             <label for="budgetRange">Set the budget</label>
             <input type="range" name="amountRange" min="0" max="800000" step="10000" value="0" oninput="this.form.amountInput.value=this.value" />
-            <input type="number" id="inputBudget" name="amountInput" min="0" max="800000" step="10000"  value="0" oninput="this.form.amountRange.value=this.value" />
+            <input type="number" id="inputBudget" name="amountInput" min="0" max="800000" step="10000"  value="0" oninput="this.form.amountRange.value=this.value" required/>
           </p>
 
         Link this project with existing project team (project owner company will be defined based on project manager)
@@ -36,7 +44,7 @@
         Link this project with existing game 
         </div><ul id="gameOptions"></ul></div>
         <br>
-          <input type="submit" value="Save" id="submitBtn"></input>
+          <input type="submit" value="Save" id="submitBtn" class="btn waves-effect waves-light"></input>
         </form>
     
 </body>

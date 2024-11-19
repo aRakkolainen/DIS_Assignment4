@@ -13,6 +13,14 @@
     <title>Add a new game or update existing</title>
 </head>
 <body>
+  <nav>
+    <a href="projects.html">List projects and related games</a> |
+    <a href="projectTeams.html">List project teams</a> |
+    <a href="newProject.html">Add new project</a> |
+    <a href="newGame.html">Add new game</a> |
+    <a href="newTeam.html">Form new project team</a> |
+    <a href="delete.html">Delete data</a> 
+  </nav>
     <h3>Add a new game or update existing one</h3>
     <form id="newGameForm" class="col s12" action="/api/add/newGame" method="POST">
         <div class="input-field col s6">
@@ -38,20 +46,20 @@
         <label for="launching_date"> Choose planned launching date</label>
         <input id="launching_date" type="date" class="datepicker">
 
-        Select which companies will own the game
+        Select which companies will own the game (Based on planned project manager)
         <p>
             <label>
-              <input id="companyACheckBox" type="checkbox" class="filled-in" />
+              <input id="companyACheckBox" type="radio" name="company" />
               <span>Company A</span>
             </label>
           </p>
           <p>
             <label>
-              <input id="companyBCheckBox" type="checkbox" class="filled-in" />
+              <input id="companyBCheckBox" type="radio" name="company" />
               <span>Company B</span>
             </label>
           </p>
-          <input type="submit" value="Save" id="submitBtn"></input>
+          <input type="submit" value="Save" id="submitBtn" class="btn waves-effect waves-light"></input>
         </form>
     
 </body>

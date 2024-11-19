@@ -11,19 +11,28 @@
     <title>Form new project team</title>
 </head>
 <body>
+  <nav>
+    <a href="projects.html">List projects and related games</a> |
+    <a href="newProject.html">Add new project</a> |
+    <a href="newGame.html">Add new game</a> |
+    <a href="newTeam.html">Form new project team</a> |
+    <a href="delete.html">Delete data</a> 
+  </nav>
   <form id="newProjectTeamForm" action="/api/add/newProjectTeam" method="POST">
       <h3>Form a new project team</h3>
       <div class="input-field col s6">
         <label for="team_name">Team name</label>
-        <input placeholder="Give name for new projectr team" id="team_name" type="text" class="validate" required>
+        <input placeholder="Give name for new project team" id="team_name" type="text" class="validate" required>
     </div> 
-      <p>Choose team leader (Project Manager)</p>
+    <div class="tooltip">Choose team leader (Project Manager)
+      <span class="tooltiptext">Project Manager defines the owner company of the team</span>
+    </div>
       <div id="projectManagers">
 
       </div><ul id="teamLeaderOptions"></ul>
       <p>Choose team members (Choose at least one of each role)</p>
         <ul id="memberOptions" class="collection"></ul>
-        <input type="submit" value="Form new team" id="submitBtn" class=""></input>
+        <input type="submit" value="Form new team" id="submitBtn" class="btn waves-effect waves-light"></input>
       </form>
     
 </body>
