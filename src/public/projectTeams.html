@@ -8,9 +8,9 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
     <!-- Compiled and minified JavaScript -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
-    <script type="module" src="./javascripts/index.js"></script>
+    <script type="module" src="./javascripts/projectTeams.js"></script>
 </head>
-<nav>
+<nav class="indigo">
     <a href="index.html">Main page</a> |
     <a href="projects.html">List projects and related games</a> |
     <a href="projectTeams.html">List project teams</a> |
@@ -21,21 +21,43 @@
   </nav>
 <body>
     <h4>Existing project teams</h4>
-    <table>
+    <table id="existingProjectTeamsTable">
         <thead>
             <tr>
                 <th>Company</th>
                 <th>Project team name</th>
                 <th>Project team leader/project manager</th>
-                <th>Members</th>
+                <th id="membersHeader">
+                    <div class="tooltip">Members
+                        <span class="tooltiptext">Click the list to show details</span>
+                      </div>
+                </th>
             </tr>
         </thead>
         <tbody id="projectTeams">
-            
         </tbody>
 
 
     </table>
+    <div id="memberDetailed" class="view-hidden">
+        <table id="membersTable">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Role</th>
+                    <th>Work email</th>
+                    <th>Phone number</th>
+                </tr>
+            </thead>
+            <tbody id="membersTableBody"></tbody>
+
+
+        </table>
+        <button id="teamDetailsBtn" class="btn waves-light" >Hide details</button>
+
+
+
+    </div>
     
 </body>
 </html>

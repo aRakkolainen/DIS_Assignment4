@@ -39,11 +39,3 @@ async function onSubmit(event) {
 
 
 }
-
-async function fetchProjectTeams() {
-    let result = await fetch("http://localhost:3000/api/projectTeams");
-    let teams = await result.json(); 
-    console.log(teams);
-
-
-}

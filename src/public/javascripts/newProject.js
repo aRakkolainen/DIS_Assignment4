@@ -84,7 +84,6 @@ async function fetchExistingProjectTeamsAndFillProjectOptions() {
     let teamsA = teams.companyA
     let teamsB = teams.companyB;
     let teamsList = teamsA.concat(teamsB);
-    console.log(teamsList);
     
     let teamOptionsElement= document.getElementById("projectTeamOptions");
     teamsList.forEach(team => {

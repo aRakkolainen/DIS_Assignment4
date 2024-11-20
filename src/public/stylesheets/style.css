@@ -32,8 +32,8 @@ form#newProjectTeamForm {
 .tooltip .tooltiptext {
   visibility: hidden;
   width: 120px;
-  background-color: black;
-  color: #fff;
+  background-color: #8c9eff;
+  color: black;
   text-align: center;
   padding: 5px 0;
   border-radius: 6px;
@@ -62,20 +62,32 @@ div.view-visible {
 }
 
 div#gameDetail {
-  background-color: #bbdefb;
+  background-color: #9fa8da;
   border-style:solid;
   padding:1.5%;
 }
 
 div#projectDetail {
-  background-color: #b2dfdb;
+  background-color: #c5cae9;
   border-style:solid;
   padding:1.5%;
 }
 
 table#gameProjectsTable {
   border-style: solid;
-  border-color:rgb(216, 216, 216);
+  border-color:#e8eaf6;
+  padding-bottom:2%;
+  margin-bottom:1.5%;
+}
+
+table#membersTable {
+  border-style: solid;
+background-color: #7986cb;
+}
+
+table#existingProjectTeamsTable{
+  border-style: solid;
+  border-color:#e8eaf6;
   padding-bottom:2%;
   margin-bottom:1.5%;
 }

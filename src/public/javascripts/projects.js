@@ -63,7 +63,6 @@ function fillGameProjectsTable(gameProjects) {
         let gameName = document.createElement("td");
         let developmentTeam = document.createElement("td");
         let projectManager = document.createElement("td");
-        console.log(gameProject.project_id);
         let ownedBy = "";
         if(gameProject.project_id.includes("CA")) {
             ownedBy = "CompanyA";

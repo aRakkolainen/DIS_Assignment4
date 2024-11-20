@@ -25,9 +25,9 @@ router.get("/gameProjects/companyA", async (req, res) => {
     let results = [];
 
     if (projects) {
-        console.log(projects);
-        projects.forEach( async (project) => {
+        for(let i=0; i < projects.length; i++) {
             let foundProject = {};
+            let project = projects[i];
             foundProject.project_id = project.project_id;
             foundProject.project_name = project.project_name;
             let game = await Game.findOne({game_id: project.game_id});
@@ -46,13 +46,12 @@ router.get("/gameProjects/companyA", async (req, res) => {
                 foundProject.team_name = project_team_result.team_name;
             }
             results.push(foundProject);
-            console.log(results);
-        });
-        //console.log(results);
-
+        };
+        console.log(results);
         
-        res.json({"data": results});
     }
+    console.log(results);
+    res.json({data: results});
     
 });
 
@@ -67,6 +66,7 @@ router.get("/gameProjects/companyB", async (req, res) => {
     try {
         let result = await companyB_DB.query(query);
         response = {data: result.rows};
+        console.log(response);
 
     } catch(error) {
         response = {data: error};
@@ -146,21 +146,28 @@ router.get("/detailedView/game/:game_id", async (req, res) => {
 })
 
 
-router.get("/list/detailed/projectTeams", async(req, res) => {
+router.get("/list/detailed/project_teams", async(req, res) => {
     console.log("Listing project teams with detailed info..")
     let project_teams_A = await ProjectTeam.find({});
-    let result = {}
+
     let found_teams_A = [];
-    let found_team_A = {
-        team_id: "",
-        team_name: "",
-        team_leader_id: "",
-        project_manager: {}, 
-        team_members: []
+    let found_teams_B = [];
+    let membersData = [];
+    let result = {
+        companyA: [], 
+        companyB: []
     }
     if(project_teams_A) {
-        project_teams_A.forEach(async(team) => {
-            console.log("Trying to find the project manager..")
+        for (let i=0; i < project_teams_A.length; i++) {
+            const team = project_teams_A[i];
+            let found_team_A = {
+                team_id: team.team_id,
+                team_name: team.team_name,
+                team_leader_id: team.team_leader_id,
+                project_manager: {}, 
+                team_members: []
+            }
+
             //Try to find project manager
             found_team_A.team_id = team.team_id;
             found_team_A.team_name = team.team_name;
@@ -187,40 +194,101 @@ router.get("/list/detailed/projectTeams", async(req, res) => {
 
                 let detailedMembersOfCompanyA = await ProjectTeamMember.find({member_id: {$in: membersOfCompanyA}});
 
-                let detailedMembersOfCompanyB = [];
                 
                 //Looping through the project members and finding their details..
-
-                membersOfCompanyB.forEach(async(member) => {
+                let membersDataCompanyB = [];
+                for(let i=0; i <membersOfCompanyB.length; i++) {
+                    let member_id = membersOfCompanyB[i];
                     let query = 'SELECT * FROM project_team_member WHERE member_id=$1';
-                    try {
-                        let detailedMemberB = await companyB_DB.query(query, [member]);
-                        if(detailedMemberB || detailedMemberB.rowCount > 0) {
-                            console.log(detailedMemberB.rows)
-                            detailedMembersOfCompanyB.push(detailedMemberB.rows);
-                        }
-                    } catch(error) {
-                        console.error(error);
-                    }
-                })
+                    let detailedMemberB = await companyB_DB.query(query, [member_id]);
+                    membersDataCompanyB.push(detailedMemberB.rows[0]);
+                }
+                membersData = detailedMembersOfCompanyA.concat(membersDataCompanyB);
 
-                let team_members = detailedMembersOfCompanyA.concat(detailedMembersOfCompanyB);
-                found_team_A.team_members = team_members;
+               //let team_members = detailedMembersOfCompanyA.concat(detailedMembersOfCompanyB);
+                found_team_A.team_members = membersData;
             }
 
             found_teams_A.push(found_team_A);
-        })
-        console.log(found_teams_A);
+        };
         result = {
             companyA: found_teams_A
         }
-        res.json(result);
     }
 
 
+    //CompanyB project teams
+    let projectManagers = [];
+    let findProjectManagers = 'SELECT team_id, team_name, team_leader_id, member_name AS project_manager, work_email, phone_number FROM project_team INNER JOIN project_team_member ON project_team_member.member_id = project_team.team_leader_id;'
+    try {
+        let result = await companyB_DB.query(findProjectManagers);
+        projectManagers = result.rows;
+        if (result.rowCount >0) {
+            for(let i=0; i < projectManagers.length; i++) {
+                let projectManager = projectManagers[i];
+                let query = 'SELECT fk_member_id FROM project_team INNER JOIN team_member_in_project_team ON team_member_in_project_team.fk_team_id = project_team.team_id AND project_team.team_id = $1 AND team_member_in_project_team.fk_member_id LIKE $2';
+                let found_team_B = {
+                    team_id: projectManager.team_id,
+                    team_name: projectManager.team_name,
+                    team_leader_id: projectManager.team_leader_id,
+                    project_manager: {
+                        manager_id: projectManager.team_leader_id,
+                        manager_name: projectManager.project_manager, 
+                        manager_work_email: projectManager.work_email,
+                        manager_phone_number: projectManager.phone_number,
+                    }, 
+                    team_members: []
+                }
+                //console.log(found_team_B);
+                 
+                try {
+            
+                    let resultsA = await companyB_DB.query(query, [projectManager.team_id, 'CA%']);
+                    let resultsB = await companyB_DB.query(query, [projectManager.team_id, 'CB%']);
+                    /* console.log(resultsA.rows);
+                    console.log(resultsB.rows); */
+                    let membersA = [];
+                    let membersB = [];
+                    for (let i=0; i < resultsA.rowCount; i++) {
+                        let team_member_A = resultsA.rows[i];
+                        let found_team_member_A = await ProjectTeamMember.findOne({member_id: team_member_A.fk_member_id});
+                        if(found_team_member_A) {
+                            membersA.push(found_team_member_A);
+                        }
+                    }
+
+                    for(let i=0; i < resultsB.rowCount; i++) {
+                        let member_id = resultsB.rows[i].fk_member_id;
+                        let query = 'SELECT * FROM project_team_member WHERE member_id=$1';
+                        let found_team_member_B = await companyB_DB.query(query, [member_id]);
+                        
+                        membersB.push(found_team_member_B.rows[0]);
+                    }
+
+                    let teamMembers = membersA.concat(membersB);
+                    console.log(teamMembers);
+                    found_team_B.team_members = teamMembers;
+                    found_teams_B.push(found_team_B);
+                    result = {
+                        companyB: found_teams_B
+                    }
+                }catch(error){
+                    console.error(error);
+                }
+            }
+        }   
+    } catch(error) {
+        console.error(error);
+    }
+   
+
+    result = {
+        companyA: found_teams_A, 
+        companyB: found_teams_B
+    }
 
 
-
+    res.json(result);
 })
 
 router.get("/list/games", async (req, res) => {
