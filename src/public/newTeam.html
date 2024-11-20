@@ -14,14 +14,14 @@
   <nav class="indigo">
     <a href="index.html">Main page</a> |
     <a href="projects.html">List projects and related games</a> |
-    <a href="projectTeams.html">List project teams</a> |
-    <a href="newProject.html">Edit project</a> |
-    <a href="newGame.html">Edit game</a> |
-    <a href="newTeam.html">Form new project team</a> |
+    <a href="projectTeams.html">List existing project teams</a> |
+    <a href="newProject.html">Edit projects</a> |
+    <a href="newGame.html">Edit games</a> |
+    <a href="newTeam.html">Edit project teams</a> |
     <a href="delete.html">Delete data</a> 
   </nav>
   <form id="newProjectTeamForm" action="/api/add/newProjectTeam" method="POST">
-      <h3>Form a new project team</h3>
+      <h3>Form a new project team / Update an existing one</h3>
       <div class="input-field col s6">
         <label for="team_name">Team name</label>
         <input placeholder="Give name for new project team" id="team_name" type="text" class="validate" required>

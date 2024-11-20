@@ -1,10 +1,10 @@
 [{
   "_id": {
-    "$oid": "673c8e71b4d2feec85ad4f2d"
+    "$oid": "673df7d83cb22b12c1dcceb8"
   },
-  "team_id": "CA_Team_1001",
-  "team_name": "turtle fighter developers",
-  "team_leader_id": "CA_1009",
+  "team_id": "CA_Team_1000",
+  "team_name": "fps project team",
+  "team_leader_id": "CA_1001",
   "team_members": [
     {
       "member_id": "CA_1002"
@@ -19,10 +19,39 @@
       "member_id": "CA_1005"
     },
     {
-      "member_id": "CA_1006"
+      "member_id": "CA_1007"
     },
     {
-      "member_id": "CA_007"
+      "member_id": "CA_1010"
+    },
+    {
+      "member_id": "CB_1003"
+    },
+    {
+      "member_id": "CB_1004"
+    },
+    {
+      "member_id": "CB_1005"
+    },
+    {
+      "member_id": "CB_1007"
+    },
+    {
+      "member_id": "CB_1008"
+    }
+  ],
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "673e00fcad5c8a928b294fe7"
+  },
+  "team_id": "CA_Team_1001",
+  "team_name": "test project team",
+  "team_leader_id": "CA_1009",
+  "team_members": [
+    {
+      "member_id": "CA_1002"
     },
     {
       "member_id": "CA_1008"
@@ -31,27 +60,13 @@
       "member_id": "CB_1003"
     },
     {
-      "member_id": "CB_1005"
+      "member_id": "CB_1004"
     },
     {
-      "member_id": "CB_1007"
-    }
-  ],
-  "__v": 0
-},
-{
-  "_id": {
-    "$oid": "673cc4f19a5bbf42aaced209"
-  },
-  "team_id": "CA_Team_1002",
-  "team_name": "testers",
-  "team_leader_id": "CA_1009",
-  "team_members": [
-    {
-      "member_id": "CA_007"
+      "member_id": "CB_1006"
     },
     {
-      "member_id": "CB_1007"
+      "member_id": "CB_1008"
     }
   ],
   "__v": 0

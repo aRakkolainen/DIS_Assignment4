@@ -34,7 +34,7 @@ async function onSubmit(event) {
         body: JSON.stringify(newGame)
     })
     let responseText = await response.json(); 
-    console.log(responseText.message);
+    alert(responseText.message);
 
 
 

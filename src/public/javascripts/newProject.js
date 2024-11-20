@@ -38,8 +38,8 @@ async function onSubmit(event) {
         body: JSON.stringify(newProject)
     })
 
-    let result = await response.text(); 
-    console.log(result.text);
+    let responseText = await response.text(); 
+    alert(responseText);
 }
 function checkRadioButtonSelection(options){
     console.log("Checking options..")
@@ -84,7 +84,7 @@ async function fetchExistingProjectTeamsAndFillProjectOptions() {
     let teamsA = teams.companyA
     let teamsB = teams.companyB;
     let teamsList = teamsA.concat(teamsB);
-    
+
     let teamOptionsElement= document.getElementById("projectTeamOptions");
     teamsList.forEach(team => {
         let listItem = document.createElement("li");
@@ -95,11 +95,13 @@ async function fetchExistingProjectTeamsAndFillProjectOptions() {
         input.setAttribute("id", team.team_id);
         input.setAttribute("type", "radio");
         input.setAttribute("name", "project_team");
+        let owned_by = ""
         if(team.team_id.includes("CA_")) {
-            itemSpan.innerText = team.team_name + " (Project Manager " + team.member_name + ", companyA";
+            owned_by = "CompanyA"
         } else if(team.team_id.includes("CB_")) {
-            itemSpan.innerText = team.team_name + " (Project Manager " + team.member_name + ", companyB";
+            owned_by = "CompanyB"
         }
+        itemSpan.innerText = team.team_name + " (Project Manager " + team.member_name + ", " + owned_by + ")";
         itemSpan.setAttribute("id", team.team_leader_id);
         label.appendChild(input); 
         label.appendChild(itemSpan);
@@ -137,7 +139,15 @@ async function fetchExistingGamesAndFillGameOptions() {
             let launching_month = months[launching_date.getMonth()];
             plannedLaunchingDate = launching_date.getDate() + "." + launching_month +"." + launching_date.getFullYear() 
         }
-        itemSpan.innerText = game.game_name + " (planned launching date: " + plannedLaunchingDate + ")";
+        let owned_by = "";
+        if(game.game_id.includes("CA")) {
+            owned_by = "CompanyA";
+        } else if (game.game_id.includes("CB")) {
+            owned_by = "CompanyB";
+        } 
+
+
+        itemSpan.innerText = game.game_name + " (planned launching date: " + plannedLaunchingDate + ", planned owner: "+ owned_by+ ")";
         itemSpan.setAttribute("id", game.game_id);
         label.appendChild(input); 
         label.appendChild(itemSpan);

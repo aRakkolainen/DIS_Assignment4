@@ -266,7 +266,6 @@ router.get("/list/detailed/project_teams", async(req, res) => {
                     }
 
                     let teamMembers = membersA.concat(membersB);
-                    console.log(teamMembers);
                     found_team_B.team_members = teamMembers;
                     found_teams_B.push(found_team_B);
                     result = {
@@ -317,11 +316,10 @@ router.get("/list/games", async (req, res) => {
 //Add new game to databases
 router.post("/add/newGame", async (req, res) => {
     console.log("Adding new game..")
-    //If checked only for company A, then storing only to that database
-    //To-do add checking how many games there already is and create the id based on that.
+    let msgText="";
     let companyA_games = await Game.find({});
-    let numberOfGamesA = 1001; 
-    let numberOfGamesB = 1001; 
+    let numberOfGamesA = 0; 
+    let numberOfGamesB = 0; 
     if (companyA_games) {
         numberOfGamesA += companyA_games.length; 
     }
@@ -353,6 +351,7 @@ router.post("/add/newGame", async (req, res) => {
 
     if(existing_gameA) {
         if(existing_gameA.game_id.includes("CA") && companyA){
+            console.log("Updating existing game within companyA..");
             owned_by = "CompanyA";
             let updatedGame = {
                 game_name: game_name,
@@ -362,8 +361,10 @@ router.post("/add/newGame", async (req, res) => {
                 launching_date: launching_date, 
                 owned_by: owned_by, 
             }
-            await Game.findOneAndUpdate({game_name: game_name}, updatedGame);
-            response = {message: 'Existing game updated successfully!'};
+            await existing_gameA.updateOne({game_id: existing_gameA.game_id}, updatedGame);
+            msgText = `Game ${game_name} updated successfully`;
+            console.log(msgText);
+            response = {message: msgText};
             console.log(response.message);
         } else if(existing_gameA.game_id.includes("CA") && companyB) {
             console.log("Needs to be checked if game exists in company B db already");
@@ -376,6 +377,7 @@ router.post("/add/newGame", async (req, res) => {
                     id = numberOfGamesB +1;
                 }
                 let game_id = "CB_Game_" + id;
+                console.log(game_id);
                 let insertQuery = 'INSERT INTO game(game_id, game_name, description, launching_date, age_limit, genre) VALUES ($1, $2, $3, $4, $5, $6);';
                 try {
                     await companyB_DB.query(insertQuery, [game_id, game_name, game_description, launching_date, age_limit, genre]);
@@ -402,11 +404,11 @@ router.post("/add/newGame", async (req, res) => {
              }
 
         } else if(existing_gameB.game_id.includes("CB") && companyA) {
-            let id = 1001;
-                if(numberOfGamesB > 0) {
-                    id = numberOfGamesB +1;
-                }
-                let game_id = "CA_Game_" + id;
+            let numberOfGames = 1000;
+            if(numberOfGamesA > 0) {
+                numberOfGames += numberOfGamesA; 
+            }
+            let game_id = "CA_Game_" + numberOfGames;
             let newGame = new Game({
                 game_id: game_id, 
                 game_name: game_name, 
@@ -434,11 +436,11 @@ router.post("/add/newGame", async (req, res) => {
     } else {
         console.log("Game does not exist in either databases, so adding new one..")
         if(companyA) {
-            let id = 1001;
-                if(numberOfGamesB > 0) {
-                    id = numberOfGamesB +1;
-                }
-                let game_id = "CA_Game_" + id;
+            let numberOfGames = 1000;
+            if(numberOfGamesA > 0) {
+                numberOfGames += numberOfGamesA; 
+            }
+            let game_id = "CA_Game_" + numberOfGames;
             let newGame = new Game({
                 game_id: game_id, 
                 game_name: game_name, 
@@ -448,17 +450,17 @@ router.post("/add/newGame", async (req, res) => {
                 launching_date: launching_date, 
                 owned_by: owned_by,
             })
-            console.log(newGame);
             await newGame.save(); 
             response = {message: 'New game stored successfully!'};
             console.log(response.message);
 
         } else if(companyB) {
-            let id = 1001;
-                if(numberOfGamesB > 0) {
-                    id = numberOfGamesB +1;
-                }
-                let game_id = "CB_Game_" + id;
+            let numberOfGames = 1000;
+            if(numberOfGamesB > 0) {
+                numberOfGames += numberOfGamesB; 
+            }
+            let game_id = "CB_Game_" + numberOfGames;
+            console.log(game_id);
             let insertQuery = 'INSERT INTO game(game_id, game_name, description, launching_date, age_limit, genre) VALUES ($1, $2, $3, $4, $5, $6);';
             try {
                 await companyB_DB.query(insertQuery, [game_id, game_name, game_description, launching_date, age_limit, genre]);
@@ -478,16 +480,15 @@ router.post("/add/newGame", async (req, res) => {
 //Delete existing game
 router.delete("/delete/game/:game_name", async(req, res) => {
     let game_name = req.params.game_name; 
-    console.log(game_name);
+    game_name = game_name.toLowerCase();
     console.log("Trying to find the game..");
     let result_text = "";
 
     let gameA = await Game.findOne({game_name: game_name});
     if (gameA) {
         console.log("Game found from database A, deleting..");
-        const deleteResult = Game.deleteOne({game_name: game_name});
-        console.log(deleteResult);
-        result_text = "Game deleted successfully";
+        await Game.deleteOne({game_name: game_name});
+        result_text =`Game ${game_name} deleted successfully`;
     } else {
         console.log("Game not found from db A, trying to find from database B");
         let query = "SELECT * FROM game WHERE game_name=$1;"
@@ -501,11 +502,12 @@ router.delete("/delete/game/:game_name", async(req, res) => {
                 let gameB = result.rows[0];
                 let deleteQuery = 'DELETE FROM game WHERE game_id=$1 AND game_name=$2;';
                 try {
-                    let deleteResult = await companyB_DB.query(deleteQuery, [gameB.game_id, game_name]);
-                    result_text = 'Game deleted successfully';
+                    await companyB_DB.query(deleteQuery, [gameB.game_id, game_name]);
+                    result_text = `Game ${game_name} deleted successfully`;
     
                 } catch(error) {
                     console.log(error);
+                    result_text = "Error occured: " + error; 
                 }
             }
         } catch(error) {
@@ -523,7 +525,6 @@ router.delete("/delete/game/:game_name", async(req, res) => {
 router.post("/add/newProject", async (req, res) => {
     //Owner of project is defined based on the project manager
     console.log("Adding new project..");
-    console.log(req.body);
     let new_project_name = req.body.project_name;
     new_project_name = new_project_name.toLowerCase();
     let new_project_team_id = req.body.linked_project_team_id;
@@ -559,14 +560,17 @@ router.post("/add/newProject", async (req, res) => {
     if(existing_project_companyA.project_team_leader_id && new_team_leader_id) {
         if(existing_project_companyA.project_team_leader_id.includes("CA") && new_team_leader_id.includes("CA")) {
             console.log("Updating existing project within company A");
-            existing_project_companyA.project_name = new_project_name; 
-            existing_project_companyA.planned_start_date = new_planned_start_date; 
-            existing_project_companyA.planned_end_date = new_planned_end_date;
-            existing_project_companyA.budget = new_budget; 
-            existing_project_companyA.game_id = new_game_id;
-            existing_project_companyA.project_team_id = new_project_team_id;
-            existing_project_companyA.project_team_leader_id = new_team_leader_id;
-            await existing_project_companyA.save();
+            let updated_project_companyA = {
+                project_name: new_project_name,
+                planned_start_date: new_planned_start_date,
+                planned_end_date: new_planned_end_date, 
+                budget: new_budget,
+                game_id: new_game_id, 
+                project_team_id: new_project_team_id, 
+                project_team_leader_id: new_team_leader_id
+            }
+
+            await existing_project_companyA.updateOne({project_id: existing_project_companyA.project_id}, updated_project_companyA);
             msgText = `Project ${new_project_name} updated successfully`;
             console.log(msgText);
             
@@ -577,7 +581,7 @@ router.post("/add/newProject", async (req, res) => {
                 msgText="This update is not allowed because it violates the unique project team name constraint in db B";
             } else {
                 console.log("Project with this name does not exist in company B db, so it can be stored there..");
-                let numberOfProjects = 1001;
+                let numberOfProjects = 1000;
                 if(numberOfProjectsB > 0) {
                     numberOfProjects += numberOfProjectsB; 
                 }
@@ -628,7 +632,7 @@ router.post("/add/newProject", async (req, res) => {
         if(new_team_leader_id.includes("CA")) {
             console.log("Project Manager is from Company A, storing the new project there..");
             //Fetching the existing teams to define the new id
-            let numberOfProjects = 1001;
+            let numberOfProjects = 1000;
             if(numberOfProjectsA > 0) {
                 numberOfProjects += numberOfProjectsA; 
             }
@@ -651,7 +655,7 @@ router.post("/add/newProject", async (req, res) => {
         } else if(new_team_leader_id.includes("CB")) {
             console.log("Project Manager is from Company B, storing the new project team there..");
             //Checking how many teams there already is for defining the project_team id
-            let numberOfProjects = 1001;
+            let numberOfProjects = 1000;
                 if(numberOfProjectsB > 0) {
                     numberOfProjects += numberOfProjectsB; 
                 }
@@ -774,13 +778,13 @@ router.post("/add/newProjectTeam", async(req, res) => {
                     msgText="This update is not allowed because it violates the unique project team name constraint in db B";
                 } else {
                     console.log("Project with this name does not exist in company B db, so it can be stored there..");
-                    let numberOfTeams = 1001;
+                    let numberOfTeams = 1000;
                     if(numberOfProjectTeamsB > 0) {
                         numberOfTeams += numberOfProjectTeamsB; 
                     }
                     let new_team_id = "CB_Team_" + numberOfTeams;
                     
-                    
+                    console.log(new_team_id);
                     let insertNewProjectTeamQuery = 'INSERT INTO project_team(team_id, team_name, team_leader_id) VALUES ($1, $2, $3);';
                     try {
                         await companyB_DB.query(insertNewProjectTeamQuery, [new_team_id, new_team_name, new_team_leader_id]);
@@ -810,6 +814,7 @@ router.post("/add/newProjectTeam", async(req, res) => {
                 }
             } else {
                 console.log("Team leader ids not in right format");
+                msgText = 'Incorrent team leader id format';
             }
         }
     } else if(existing_team_companyB) {
@@ -826,7 +831,7 @@ router.post("/add/newProjectTeam", async(req, res) => {
                 } else {
                     console.log("Project with this name does not exist in company A db, so it can be stored there..");
                     let project_teams = await ProjectTeam.find({});
-                    let numberOfTeams = 1001;
+                    let numberOfTeams = 1000;
                     if (project_teams) {
                         numberOfTeams += project_teams.length;
                     }
@@ -871,12 +876,11 @@ router.post("/add/newProjectTeam", async(req, res) => {
                 console.log("Project Manager is from Company A, storing the new project team there..");
                 //Fetching the existing teams to define the new id
                 let project_teams = await ProjectTeam.find({});
-                let numberOfTeams = 1001;
+                let numberOfTeams = 1000;
                 if (project_teams) {
                     numberOfTeams += project_teams.length;
                 }
                 new_project_team_id = 'CA_Team_' + numberOfTeams;
-                console.log(new_project_team_id);
                 let newProjectTeam = new ProjectTeam({
                     team_id: new_project_team_id,
                     team_name: new_team_name,
@@ -889,13 +893,12 @@ router.post("/add/newProjectTeam", async(req, res) => {
             } else if( new_team_leader_id.includes("CB")) {
                 console.log("Project Manager is from Company B, storing the new project team there..");
                 //Checking how many teams there already is for defining the project_team id
-                let numberOfTeams = 1001;
+                let numberOfTeams = 1000;
                     if(numberOfProjectTeamsB > 0) {
                         numberOfTeams += numberOfProjectTeamsB; 
                     }
                     let new_team_id = "CB_Team_" + numberOfTeams;
-                    
-                    
+                    console.log(new_team_id);
                     let insertNewProjectTeamQuery = 'INSERT INTO project_team(team_id, team_name, team_leader_id) VALUES ($1, $2, $3);';
                     try {
                         await companyB_DB.query(insertNewProjectTeamQuery, [new_team_id, new_team_name, new_team_leader_id]);
@@ -930,85 +933,6 @@ router.post("/add/newProjectTeam", async(req, res) => {
         } else {
             msgText = 'Project Manager Not Defined, cannot store the new project team';
         }
-    /* if (existing_team_companyA && new_team_leader_id && new_team_leader_id.includes("CA")) {
-        let teamID = 'CA_'+ new_team_id;
-        if (existing_team_companyA.length > 0) {
-            new_team_members.forEach(async (member) => {
-                let existing_members = existing_team.team_members;
-                if(!existing_members.includes(member.member_id)) {
-                    existing_members.team_members.push(member.member_id);
-                }
-            });
-            existing_team.team_name = new_team_name; 
-            existing_team.team_members = team
-
-
-            existing_team = {
-                team_id: teamID,
-                team_name: new_team_name, 
-                team_leader_id: new_team_leader_id,
-                team_members: existing_members
-            }
-        } else {
-            let members_companyA = [];
-            new_team_members.forEach(async (member) => {
-                members_companyA.push(member.member_id);
-            });
-
-            let newProjectTeam = new ProjectTeam ({
-                team_id: new_team_id,
-                team_name: new_team_name, 
-                team_leader_id: new_team_leader_id,
-                team_members: members_companyA
-            })
-            try {
-                await newProjectTeam.save();
-            } catch(error) {
-                console.log(error);
-                responseMsg = {
-                    msg: "Failed to save due following error: " + error
-                }
-            }
-        }
-    }
-
-    if(new_team_leader_id && new_team_leader_id.includes('CB')) {
-        //Inserting new project team for company B and adding the ids of members to team_member_in_project_team table
-        let insertNewProjectTeamQuery = 'INSERT INTO project_team(team_id, team_name, team_leader_id) VALUES ($1, $2, $3);';
-        try {
-            //Check if one team already exists: 
-            let result = await companyB_DB.query(selectQuery, [new_team_name]);
-            console.log(result.rows);
-            if (result.rowCount > 0) {
-                //Update existing team instead..
-                let updateQuery = 'UPDATE project_team SET team_name=$1, team_leader_id=$2 WHERE team_id=$3;'
-                await companyB_DB.query(updateQuery, [new_team_name, new_team_leader_id, new_team_id]);
-            } else {
-                await companyB_DB.query(insertNewProjectTeamQuery, [new_team_id, new_team_name, new_team_leader_id]);
-            }
-        } catch(error) {
-            console.log(error);
-            responseMsg = {
-                msg: "Failed to save due following error: " + error
-            }
-        }
-    
-        //team_member_in_project_team;
-        let fk_team_id = req.body.team_id; 
-
-        //Check if the members already belong to the team
-        new_team_members.forEach(async (member) => {
-            let insertQuery = 'INSERT INTO public.team_member_in_project_team(fk_team_id, fk_member_id) VALUES ($1, $2);'
-            try {
-                await companyB_DB.query(insertQuery, [fk_team_id, member.member_id]);
-            } catch(error) {
-                console.log(error);
-                responseMsg = {
-                    msg: "Failed to save due following error: " + error
-                }
-            }  
-        });
-    } */
 }
     responseMsg = {
         msg: msgText

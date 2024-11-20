@@ -1,14 +1,28 @@
 [{
   "_id": {
-    "$oid": "673cb45a79cbf97d54d85b0d"
+    "$oid": "673df7ad3cb22b12c1dcceae"
   },
-  "game_id": "CA_Game_1003",
-  "game_name": "turtle fighter 2.0",
-  "description": "Game where two turtles are fighting",
+  "game_id": "CA_Game_1000",
+  "game_name": "fps shooter game",
+  "description": "Simple First Person Shooter game",
   "launching_date": {
-    "$date": "2025-10-30T00:00:00.000Z"
+    "$date": "2026-09-28T00:00:00.000Z"
   },
-  "age_limit": "7+",
-  "genre": "2D, combat",
+  "age_limit": "16+",
+  "genre": "FPS",
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "673e016dad5c8a928b294ff8"
+  },
+  "game_id": "CA_Game_1001",
+  "game_name": "test game",
+  "description": "test game",
+  "launching_date": {
+    "$date": "2024-11-20T00:00:00.000Z"
+  },
+  "age_limit": "3+",
+  "genre": "test",
   "__v": 0
 }]

@@ -6,7 +6,7 @@ window.onload = async () => {
     let projectManagerHeader = document.getElementById("projectManagerToolTip");
     projectManagerHeader.addEventListener("hover", () => {
         var elems = document.querySelectorAll('.tooltipped');
-        var instances = M.Tooltip.init(elems, options);
+        var instances = M.Tooltip.init(elems);
         instances.open();
     })
 }
@@ -92,11 +92,6 @@ async function onSubmit(event) {
     let inputTeamLeaders = document.getElementById("teamLeaderOptions");
     let teamLeaders = inputTeamLeaders.childNodes;
 
-    /* let numberOfTeams = await fetchExistingProjectTeams();
-    let team_id = 1000;
-    if (numberOfTeams.companyA != 0 && numberOfTeams.companyB != 0) {
-        team_id = 1000 + numberOfTeams.companyA;
-    } */
     let managerID = "";
     for (let i=0; i < teamLeaders.length; i++) {
         let input = teamLeaders[i].firstChild;
@@ -137,7 +132,6 @@ async function onSubmit(event) {
         team_members: members
     };
     console.log(newProjectTeam);
-    console.log("Project team to be stored: " + newProjectTeam);
 
     let url = 'http://localhost:3000/api/add/newProjectTeam'
    let response = await fetch(url, {
@@ -148,7 +142,8 @@ async function onSubmit(event) {
         body: JSON.stringify(newProjectTeam)
     })
     let resultMsg = await response.json(); 
-    console.log(resultMsg.msg);
+    let responseText = resultMsg.msg;
+    alert(responseText);
 
 
 
